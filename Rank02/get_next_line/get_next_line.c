@@ -1,6 +1,6 @@
 #include "get_next_line.h"
 
-size_t	ft_strlen(char *str)
+static int	ft_strlen(char *str)
 {
 	int	i;
 
@@ -10,28 +10,142 @@ size_t	ft_strlen(char *str)
 	return (i);
 }
 
-char	ft_strjoin(char *s1, char *s2)
+static char	*ft_strchr(char *str, char c)
 {
 	int	i;
-	int	j;
-	char *new;
-	
-	i = -1
-	j = -1;
-	if (!s1 || !s2)
+
+	i = -1;
+	while (++i < ft_strlen(str) + 1)
+		if (str[i] == (char)c)
+			return ((char *)str + i);
+	return (NULL);
+}
+
+static char	*ft_strdup(char *str)
+{
+	int	i;
+	char *copy;
+
+	i = -1;
+	copy = malloc((ft_strlen(str) + 1 )* sizeof(char));
+	if (!copy)
 		return (NULL);
-	new = malloc((ft_strlen(s1) + ft_strlen(s2)) + 1 * sizeof(char));
+	while (++i < ft_strlen(str))
+		copy[i] = str[i];
+	copy[i] = '\0';
+	return (copy);
+}
+
+static char	*ft_substr(char *str, int len)
+{
+	int	i;
+	char *new;
+
+	i = -1;
+	new = malloc(len + 1 * sizeof(char));
 	if (!new)
 		return (NULL);
-	while (s1[++i])
-		new[i] = s1[i];
-	while (s2[++i])
-		new[i] = s2[++j];
+	while (++i < len)
+		new[i] = str[i];
 	new[i] = '\0';
 	return (new);
 }
 
-int	get_next_line(char **line)
+static char	*ft_strjoin(char *s1, char *s2)
 {
+	int	i;
+	int	j;
+	char *new;
 
+	i = -1;
+	j = -1;
+	if (!s1 || !s2)
+		return (NULL);
+	new = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!new)
+		return (NULL);
+	while (s1[++i])
+		new[i] = s1[i];
+	while (s2[++j])
+		new[i++] = s2[j];
+	new[i] = '\0';
+	return (new);
+}
+
+static char	*ft_line(char **save)
+{
+	int		i;
+	char	*tmp;
+	char	*ret;
+
+	tmp = NULL;
+	ret = NULL;
+	i = 0;
+	while ((*save)[i] != '\n' && (*save)[i])
+		i++;
+	if ((*save)[i++] == '\n')
+		ret = ft_substr(*save, i);
+	else if (ft_strchr(*save, '\0'))
+	{
+		if (**save == '\0')
+		{
+			free(*save);
+			*save = NULL;
+			return (NULL);
+		}
+		ret = *save;
+		*save = NULL;
+		return (ret);
+	}
+	tmp = ft_strdup(*save + i);
+	free(*save);
+	*save = tmp;
+	return (ret);
+}
+
+static char	*ft_read(char **save, char *buf, int fd)
+{
+	int	file;
+	char *tmp;
+
+	tmp = NULL;
+	file = read(fd, buf, BUFFER_SIZE);
+	while (file)
+	{
+		buf[file] = '\0';
+		tmp = ft_strjoin(*save, buf);
+		free(*save);
+		*save = ft_strdup(tmp);
+		free(tmp);
+		tmp = NULL;
+		if (ft_strchr(buf, '\n'))
+			break ;
+		file = read(fd, buf, BUFFER_SIZE);
+	}
+	free(buf);
+	buf = NULL;
+	return (ft_line(save));
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*save;
+	char *buf;
+	char *ret;
+
+	buf = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buf, 0) == -1)
+		return (NULL);
+	buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buf)
+		return (NULL);
+	if (!save)
+		save = ft_strdup("");
+	ret = ft_read(&save, buf, fd);
+	if (ret == NULL)
+	{
+		free(save);
+		save = NULL;
+	}
+	return (ret);
 }

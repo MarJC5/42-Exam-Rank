@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jmartin <jmartin@student.42lausanne.ch>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/30 22:17:30 by jmartin           #+#    #+#             */
-/*   Updated: 2021/11/30 22:19:34 by jmartin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -30,7 +18,7 @@ int	ft_printf_str(char *str, int *count)
 	return (*count);
 }
 
-int	ft_printf_base(int nbr, int *count, int base)
+int	ft_printf_base(long nbr, int *count, int base)
 {
 	if (nbr == 0)
 		ft_printf_char('0', count);
@@ -61,9 +49,9 @@ int	ft_printf_args(va_list args, char convert, int *count)
 	if (convert == 's')
 		ft_printf_str(va_arg(args, char *), count);
 	else if (convert == 'd')
-		ft_printf_base(va_arg(args, int), count, 10);
+		ft_printf_base((int)va_arg(args, int), count, 10);
 	else if (convert == 'x')
-		ft_printf_base(va_arg(args, int), count, 16);
+		ft_printf_base((unsigned int)va_arg(args, int), count, 16);
 	return (*count);
 }
 
