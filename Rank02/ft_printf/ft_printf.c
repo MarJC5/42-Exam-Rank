@@ -35,7 +35,7 @@ int	ft_printf_base(long nbr, int *count, int base)
 	}
 	else
 	{
-		if (nbr < 10 || base == 10)
+		if (nbr < 10)
 			nbr += 48;
 		else
 			nbr += 87;
