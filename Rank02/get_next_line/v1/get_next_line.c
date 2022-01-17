@@ -15,10 +15,10 @@ static char	*ft_strchr(char *str, char c)
 	int	i;
 
 	i = -1;
-	while (++i < ft_strlen(str) + 1)
-		if (str[i] == (char)c)
-			return ((char *)str + i);
-	return (NULL);
+	while (str[++i])
+		if (str[i] == (unsigned char)c)
+			return (str + i);
+	return (str);
 }
 
 static char	*ft_strdup(char *str)
@@ -27,10 +27,10 @@ static char	*ft_strdup(char *str)
 	char *copy;
 
 	i = -1;
-	copy = malloc((ft_strlen(str) + 1 )* sizeof(char));
+	copy = malloc((ft_strlen(str) + 1) * sizeof(char));
 	if (!copy)
 		return (NULL);
-	while (++i < ft_strlen(str))
+	while (str[++i])
 		copy[i] = str[i];
 	copy[i] = '\0';
 	return (copy);
@@ -83,11 +83,11 @@ static char	*ft_line(char **save)
 	i = 0;
 	while ((*save)[i] != '\n' && (*save)[i])
 		i++;
-	if ((*save)[i++] == '\n')
+	if ((*save)[++i] == '\n')
 		ret = ft_substr(*save, i);
 	else if (ft_strchr(*save, '\0'))
 	{
-		if (**save == '\0')
+		if ((*save)[i] == '\0')
 		{
 			free(*save);
 			*save = NULL;
@@ -133,8 +133,7 @@ char	*get_next_line(int fd)
 	char *buf;
 	char *ret;
 
-	buf = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buf, 0) == -1)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buf)
@@ -142,10 +141,11 @@ char	*get_next_line(int fd)
 	if (!save)
 		save = ft_strdup("");
 	ret = ft_read(&save, buf, fd);
-	if (ret == NULL)
+	if (!ret)
 	{
 		free(save);
 		save = NULL;
+		return (NULL);
 	}
 	return (ret);
 }

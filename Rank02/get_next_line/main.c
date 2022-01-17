@@ -11,7 +11,7 @@ int	main(int argc, char **argv)
 	{
 		fd = open(argv[1], O_RDONLY);
 		result = get_next_line(fd);
-		while (i++ < 30)
+		while (i++ < 50)
 		{
 			printf("%s", result);
 			result = get_next_line(fd);
