@@ -6,7 +6,7 @@
 /*   By: jmartin <jmartin@student.42lausanne.ch>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 22:57:22 by jmartin           #+#    #+#             */
-/*   Updated: 2022/03/08 10:29:01 by jmartin          ###   ########.fr       */
+/*   Updated: 2022/03/08 10:46:53 by jmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ int	main(int argc, char **argv)
 	{
 		if ((type != 'C' && type != 'c') || radius <= 0)
 			return (free_all("Error: Operation file corrupted\n", drawing, file));
+		i = 0;
+		j = 0;
 		if (type == 'C')
 		{
-			i = 0;
-			j = 0;
 			while (i < height)
 			{
 				while (j < width)
@@ -103,22 +103,20 @@ int	main(int argc, char **argv)
 				j = 0;
 				i++;
 			}
-			if (type == 'c')
+		}
+		if (type == 'c')
+		{
+			while (i < height)
 			{
-				i = 0;
-				j = 0;
-				while (i < height)
+				while (j < width)
 				{
-					while (j < width)
-					{
-						if (sqrt(((x - j) * (x - j)) + ((y - i) * (y - i))) <= radius)
-							if (sqrt(((x - j) * (x - j)) + ((y - i) * (y - i))) > radius - 1)
-								drawing[i][j] = color;
-						j++;
-					}
-					j = 0;
-					i++;
+					if (sqrt(((x - j) * (x - j)) + ((y - i) * (y - i))) <= radius)
+						if (sqrt(((x - j) * (x - j)) + ((y - i) * (y - i))) > radius - 1)
+							drawing[i][j] = color;
+					j++;
 				}
+				j = 0;
+				i++;
 			}
 		}
 	}
