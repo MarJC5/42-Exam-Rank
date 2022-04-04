@@ -26,7 +26,7 @@ int	ft_printf_base(long nbr, int *count, int base)
 	{
 		ft_printf_char('-', count);
 		nbr *= -1;
-		ft_printf_base(nbr, count, base);
+		//ft_printf_base(nbr, count, base);
 	}
 	if (nbr > base)
 	{
