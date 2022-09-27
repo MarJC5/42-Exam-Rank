@@ -63,10 +63,7 @@ int main(int argc, char **argv, char **envp)
 		if (!strcmp(argv[pos[i]], "cd"))
 		{
 			if (argv[pos[i] + 2])
-			{
 				print_err("error: cd: bad arguments\n");
-				return (1);
-			}
 			else if (chdir(argv[pos[i] + 1]))
 			{
 				print_err("error: cd: cannot change directory to ");
