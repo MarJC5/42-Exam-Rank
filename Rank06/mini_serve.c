@@ -34,27 +34,27 @@ void send_all(int es)
 
 int create_server_socket(struct sockaddr_in addr)
 {
-	int serverSock = socket(AF_INET, SOCK_STREAM, 0);
-	if (serverSock < 0)
+	int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (server_socket < 0)
 		exit_error("Fatal error\n");
 
 	bzero(&clients, sizeof(clients));
 	FD_ZERO(&active);
 
-	max = serverSock;
-	FD_SET(serverSock, &active);
+	max = server_socket;
+	FD_SET(server_socket, &active);
 
-	if ((bind(serverSock, (const struct sockaddr *)&addr, sizeof(addr))) < 0)
+	if ((bind(server_socket, (const struct sockaddr *)&addr, sizeof(addr))) < 0)
 		exit_error("Fatal error\n");
-	if (listen(serverSock, 128) < 0)
+	if (listen(server_socket, 128) < 0)
 		exit_error("Fatal error\n");
 
-	return serverSock;
+	return server_socket;
 }
 
-int handle_new_client(int serverSock, struct sockaddr_in addr, socklen_t addr_len)
+int handle_new_client(int server_socket, struct sockaddr_in addr, socklen_t addr_len)
 {
-	int client_socket = accept(serverSock, (struct sockaddr *)&addr, &addr_len);
+	int client_socket = accept(server_socket, (struct sockaddr *)&addr, &addr_len);
 	if (client_socket < 0)
 		return -1;
 	max = (client_socket > max) ? client_socket : max;
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	addr.sin_addr.s_addr = htonl(2130706433);
 	addr.sin_port = htons(port);
 
-	int serverSock = create_server_socket(addr);
+	int server_socket = create_server_socket(addr);
 
 	while(1)
 	{
@@ -114,13 +114,13 @@ int main(int argc, char **argv)
 
 		for(int fd = 0; fd <= max; fd++)
 		{
-			if (FD_ISSET(fd, &ready_read) && fd == serverSock)
+			if (FD_ISSET(fd, &ready_read) && fd == server_socket)
 			{
-				if (handle_new_client(serverSock, addr, addr_len) < 0)
+				if (handle_new_client(server_socket, addr, addr_len) < 0)
 					continue;
 				break;
 			}
-			if (FD_ISSET(fd, &ready_read) && fd != serverSock)
+			if (FD_ISSET(fd, &ready_read) && fd != server_socket)
 			{
 				handle_client_message(fd);
 				break;
