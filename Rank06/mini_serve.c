@@ -67,7 +67,10 @@ int handle_new_client(int server_socket, struct sockaddr_in addr, socklen_t addr
 
 void handle_client_message(int fd)
 {
-	int read = recv(fd, buf_read, 424242, 0);
+	int read = recv(fd, buf_read, sizeof(buf_read) - 1, 0);
+	if (read > 0) {
+		buf_read[read] = '\0';
+	}
 	if (read <= 0)
 	{
 		sprintf(buf_write, "server: client %d just left\n", clients[fd].id);
