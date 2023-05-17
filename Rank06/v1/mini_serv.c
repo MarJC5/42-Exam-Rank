@@ -18,8 +18,7 @@ char buf_read[424242], buf_write[424242];
 
 void exit_error(char *str)
 {
-	if (str)
-		write(2, str, strlen(str));
+	write(2, str, strlen(str));
 	exit(1);
 }
 
